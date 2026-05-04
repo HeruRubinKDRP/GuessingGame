@@ -1,0 +1,245 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #e7ecf3;
+    color: #2d3440;
+}
+
+.appShell {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 32px;
+}
+
+.cityCard {
+    width: min(100%, 520px);
+    padding: 36px;
+    border-radius: 28px;
+    background: #e7ecf3;
+    box-shadow: 14px 14px 28px #c5c9cf, -14px -14px 28px #ffffff;
+}
+
+.cityCard h1 {
+    margin: 0 0 8px;
+    font-size: 2rem;
+}
+
+.cityCard p {
+    margin: 0 0 24px;
+    color: #667085;
+}
+
+.cityForm {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.cityForm input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: #e7ecf3;
+    box-shadow: inset 6px 6px 12px #c5c9cf, inset -6px -6px 12px #ffffff;
+    font-size: 1rem;
+}
+
+.cityForm .button,
+.dismissButton {
+    user-select: none;
+    border: none;
+    cursor: pointer;
+    padding: 14px 18px;
+    border-radius: 16px;
+    background: #e7ecf3;
+    color: #2d3440;
+    font-weight: 700;
+    box-shadow: 7px 7px 14px #c5c9cf, -7px -7px 14px #ffffff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cityForm .button:hover,
+.dismissButton:hover,
+.modalXButton:hover {
+    transform: translateY(-2px);
+}
+
+.cityForm .button:active,
+.dismissButton:active {
+    transform: translateY(1px);
+    box-shadow: inset 5px 5px 10px #c5c9cf, inset -5px -5px 10px #ffffff;
+}
+
+.cityList {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.cityList li {
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(30, 36, 48, 0.35);
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.25s ease forwards;
+}
+
+.modalOverlay.closing {
+    animation: fadeOut 0.25s ease forwards;
+}
+
+.modalCard {
+    position: relative;
+    width: min(100%, 460px);
+    padding: 36px;
+    border-radius: 28px;
+    background: #e7ecf3;
+    box-shadow: 18px 18px 36px rgba(0, 0, 0, 0.22),
+    -10px -10px 28px rgba(255, 255, 255, 0.7);
+    animation: modalIn 0.25s ease forwards;
+}
+
+.modalCard.closing {
+    animation: modalOut 0.25s ease forwards;
+}
+
+.modalXButton {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    background: #e7ecf3;
+    color: #2d3440;
+    font-size: 1.5rem;
+    line-height: 1;
+    box-shadow: 5px 5px 10px #c5c9cf, -5px -5px 10px #ffffff;
+    transition: transform 0.2s ease;
+}
+
+.modalContent {
+    margin-bottom: 28px;
+}
+
+.modalContent h1 {
+    margin: 0 0 12px;
+}
+
+.modalContent p {
+    margin: 0;
+    color: #667085;
+    font-size: 1.1rem;
+}
+
+.dismissButton {
+    width: 100%;
+}
+
+/* super cool animations, transitions for modals*/
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes modalOut {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(18px) scale(0.96);
+    }
+}
+
+
+/*ValidATion, help the user in case they press the button before adding city, non-intrusive error*/
+
+.formActions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+}
+
+.cityError {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #b42318;
+    animation: errorIn 0.25s ease forwards;
+}
+
+.cityError.closing {
+    animation: errorOut 0.5s ease forwards;
+}
+
+@keyframes errorIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes errorOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
