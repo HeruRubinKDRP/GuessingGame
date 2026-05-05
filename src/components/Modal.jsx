@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "./Button.jsx";
 
-export function Modal({ children, onClose }) {
+export function Modal({ children, onClose, showDismissButton = true }) {
     const [isClosing, setIsClosing] = useState(false);
 
     function handleClose() {
@@ -22,9 +22,11 @@ export function Modal({ children, onClose }) {
 
                 <div className="modalContent">{children}</div>
 
-                <Button className="dismissButton" onClick={handleClose}>
-                    Dismiss
-                </Button>
+                {showDismissButton && (
+                    <Button className="dismissButton" onClick={handleClose}>
+                        Dismiss
+                    </Button>
+                )}
             </div>
         </div>,
         document.body
