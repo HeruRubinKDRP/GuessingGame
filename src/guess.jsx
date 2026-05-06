@@ -1,60 +1,36 @@
-import React, { useMemo, useState } from "react";
+import React from "react";
 import {
     BrowserRouter,
     Routes,
     Route,
 } from "react-router-dom";
 import "./guess.css";
-import getRandomNumber from "./utilities/GetRandomNumber.js";
 import StatsPage from "./pages/StatsPage.jsx";
 import GamePage from "./pages/GamePage.jsx";
-import {DIFFICULTIES} from "./Data/Settings.js";
 import StartPage from "./pages/StartPage.jsx";
+import useGuessGame from "./hooks/useGuessGame.js";
 
+/**
+ * AppRoutes
+ * Declaring the client-side routes and wires up the shared game state
+ * from useGuessGame down to each page via props.
+ *
+ * Routes:
+ * - /        → StartPage  difficulty selection and game setup
+ * - /game    → GamePage   active round guessing UI
+ * - /stats   → StatsPage  history and guess success summary
+ */
 function AppRoutes() {
-    const [settings, setSettings] = useState({
-        difficulty: "normal",
-        ...DIFFICULTIES.normal,
-    });
-
-    const [game, setGame] = useState(null);
-    const [games, setGames] = useState([]);
-
-    function startGame() {
-        const min = Math.min(settings.min, settings.max);
-        const max = Math.max(settings.min, settings.max);
-
-        setGame({
-            min,
-            max,
-            allowedGuesses: Math.max(1, settings.guesses),
-            target: getRandomNumber(min, max),
-            guesses: [],
-        });
-    }
-
-    function finishGame(finalGame) {
-        setGames((prev) => [finalGame, ...prev].slice(0, 10));
-        setGame(null);
-    }
-
-    function clearCurrentGame() {
-        setGame(null);
-    }
-
-    const stats = useMemo(() => {
-        const totalGuesses = games.reduce(
-            (sum, game) => sum + game.guesses.length,
-            0
-        );
-
-        return {
-            games,
-            averageGuesses: games.length ? totalGuesses / games.length : 0,
-            roundsWon: games.filter((game) => game.won).length,
-            roundsLost: games.filter((game) => !game.won).length,
-        };
-    }, [games]);
+    const {
+        settings,
+        setSettings,
+        game,
+        setGame,
+        stats,
+        startGame,
+        finishGame,
+        clearCurrentGame,
+    } = useGuessGame();
 
     return (
         <Routes>
@@ -98,6 +74,7 @@ function AppRoutes() {
 }
 
 export default function MyApp() {
+    // Wrap the app in BrowserRouter scoped to the /GuessingGame base path.
     return (
         <BrowserRouter basename="/GuessingGame">
             <AppRoutes />

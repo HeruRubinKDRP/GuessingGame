@@ -43,25 +43,27 @@ export default function StatsPage({ stats, startGame, clearCurrentGame }) {
                 </div>
             </section>
 
-            <button
-                className="sticky-new-game-button"
-                onClick={() => {
-                    startGame();
-                    navigate("/game");
-                }}
-            >
-                New Game
-            </button>
+            <div className="sticky-new-game-button">
+                <button
+                    className="primary-button"
+                    onClick={() => {
+                        startGame();
+                        navigate("/game");
+                    }}
+                >
+                    New Game
+                </button>
 
-            <button
-                className="secondary-button"
-                onClick={() => {
-                    clearCurrentGame();
-                    navigate("/");
-                }}
-            >
-                Change Game Settings
-            </button>
+                <button
+                    className="secondary-button"
+                    onClick={() => {
+                        clearCurrentGame();
+                        navigate("/");
+                    }}
+                >
+                    Change Game Settings
+                </button>
+            </div>
         </main>
     );
 }

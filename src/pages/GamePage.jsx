@@ -1,138 +1,86 @@
-import cleanNumber from "../utilities/cleanNumber.js";
-import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import formatNumber from "../utilities/FormatNumber.js";
-import Error from "../components/Error.jsx";
-import {Modal} from "../components/Modal.jsx";
-import ResultCard from "../components/ResultCard.jsx";
+import NavError from "../components/NavError.jsx";
+import NumberPad from "../components/NumberPad.jsx";
+import BackIcon from "../components/Graphics/BackIcon.jsx";
+import GameModals from "../components/GameModals.jsx";
+import LifeBar from "../components/LifeBar.jsx";
+import useGuessInput from "../hooks/useGuessInput.js";
+import useNumericKeyboardInput from "../hooks/useNumericKeyboardInput.js";
+import useRoundFlow from "../hooks/useRoundFlow.js";
+
+/**
+ * GamePage
+ * Main gameplay screen. Renders the active round UI, this life bar, guess input,
+ * number pad, and result/settings modals.
+ * each of these elements are encapsulated separately in their own components
+ * repsonsible for their rendering their own individual UI
+ *
+ * Props:
+ * - game / setGame-- active round state managed by useGuessGame.
+ * - finishGame--- saves the completed round to history.
+ * - startGame-- begins a new round with current settings.
+ * - clearCurrentGame--- abandons the round without saving. technically the asignment doesn't allow it, but I included  as an option
+ * in a real game you should always allow the player to quit gracefully - some habits learned in Harvard's GD50
+ */
+
+
 
 export default function GamePage({ game, setGame, finishGame, startGame, clearCurrentGame }) {
     const navigate = useNavigate();
-    const [guessInput, setGuessInput] = useState("");
-    const [message, setMessage] = useState("Enter your first guess.");
-    const [removingLifeIndex, setRemovingLifeIndex] = useState(null);
-    const [roundResult, setRoundResult] = useState(null);
-    const [showSettingsConfirm, setShowSettingsConfirm] = useState(false);
-
-    if (!game && !roundResult) {
-        return <Error/>;
-    }
 
     const remainingGuesses = game ? game.allowedGuesses - game.guesses.length : 0;
+    // Rounds with 10 or fewer guesses use heart icons; higher counts use block indicators.
     const useHearts = game ? game.allowedGuesses <= 10 : false;
 
-    function addDigit(digit) {
-        setGuessInput((prev) => cleanNumber(prev + digit));
+    // Manages guess input value and number pad interactions.
+    const {
+        guessInput,
+        addDigit,
+        backspace,
+        clearInput,
+        updateGuessInput,
+        setGuessInput,
+    } = useGuessInput();
+
+    // Manages round logic: validation, life animation, win/loss, and navigation.
+    const {
+        message,
+        removingLifeIndex,
+        roundResult,
+        submitGuess,
+        finishThenViewStats,
+        finishThenPlayAgain,
+        goToSettings,
+    } = useRoundFlow({
+        game,
+        setGame,
+        finishGame,
+        startGame,
+        clearCurrentGame,
+        navigate,
+        guessInput,
+        setGuessInput,
+        remainingGuesses,
+    });
+
+    // HOOk Listen globally so keyboard input works without focus on the input field.
+    //don't need to give input element focus to type, less tedious that way
+    useNumericKeyboardInput({
+        onEnter: submitGuess,
+        onDigit: addDigit,
+        onBackspace: backspace,
+        onClear: clearInput,
+        isEnabled: Boolean(game),
+    });
+
+    if (!game && !roundResult) {
+        // No active game — show recovery UI with a link back to the start page.
+        // since tI'm suing the react router player might visit a page out of sequence -
+        // I didn't do a redirect becuase that would be confusing for user - this way they understand why the game isn't available on the route the visited
+        return <NavError/>;
     }
 
-    function backspace() {
-        setGuessInput((prev) => prev.slice(0, -1));
-    }
-
-    function clearInput() {
-        setGuessInput("");
-    }
-
-    function finishThenViewStats() {
-        setRoundResult(null);
-        navigate("/stats");
-    }
-
-    function finishThenPlayAgain() {
-        setRoundResult(null);
-        startGame();
-    }
-
-    function goToSettings() {
-        setShowSettingsConfirm(false);
-        setRoundResult(null);
-        clearCurrentGame();
-        navigate("/");
-    }
-
-    function useLifeThen(callback) {
-        setRemovingLifeIndex(remainingGuesses - 1);
-
-        setTimeout(() => {
-            setRemovingLifeIndex(null);
-            callback();
-        }, 450);
-    }
-
-    function submitGuess() {
-        const guess = Number(guessInput);
-
-        if (guessInput === "") {
-            setMessage("Type a number first.");
-            return;
-        }
-
-        if (guess < game.min || guess > game.max) {
-            setMessage(
-                `Guess must be between ${formatNumber(game.min)} and ${formatNumber(
-                    game.max
-                )}.`
-            );
-            return;
-        }
-
-        const nextGuesses = [...game.guesses, guess];
-        const won = guess === game.target;
-        const lost = !won && nextGuesses.length >= game.allowedGuesses;
-
-        useLifeThen(() => {
-            if (won || lost) {
-                const finalGame = {
-                    ...game,
-                    guesses: nextGuesses,
-                    won,
-                };
-
-                finishGame(finalGame);
-
-                setRoundResult({
-                    won,
-                    target: game.target,
-                    guessesUsed: nextGuesses.length,
-                });
-                return;
-            }
-
-            setGame((prev) => ({
-                ...prev,
-                guesses: nextGuesses,
-            }));
-
-            setMessage(
-                guess < game.target
-                    ? `${formatNumber(guess)} is too low.`
-                    : `${formatNumber(guess)} is too high.`
-            );
-
-            setGuessInput("");
-        });
-    }
-
-    function handleKeyboardInput(e) {
-        const allowedKeys = [
-            "Backspace",
-            "Enter",
-            "Tab",
-            "ArrowLeft",
-            "ArrowRight",
-            "Delete",
-        ];
-
-        if (e.key === "Enter") {
-            e.preventDefault();
-            submitGuess();
-            return;
-        }
-
-        if (!/[0-9]/.test(e.key) && !allowedKeys.includes(e.key)) {
-            e.preventDefault();
-        }
-    }
 
     return (
         <main className="page game-page">
@@ -145,91 +93,41 @@ export default function GamePage({ game, setGame, finishGame, startGame, clearCu
                         </p>
                     </div>
 
-                    <div className="life-bar">
-                        {Array.from({ length: remainingGuesses }).map((_, index) => (
-                            <span
-                                key={index}
-                                className={`life-item ${
-                                    removingLifeIndex === index ? "life-used" : ""
-                                } ${useHearts ? "heart" : "block-life"}`}
-                            >
-                  {useHearts ? "♥" : ""}
-                </span>
-                        ))}
-                    </div>
+                    <LifeBar
+                        remainingGuesses={remainingGuesses}
+                        removingLifeIndex={removingLifeIndex}
+                        useHearts={useHearts}
+                    />
 
                     <input
                         className="guess-input"
                         value={formatNumber(guessInput)}
-                        onChange={(e) => setGuessInput(cleanNumber(e.target.value))}
-                        onKeyDown={handleKeyboardInput}
+                        onChange={(e) => updateGuessInput(e.target.value)}
                         inputMode="numeric"
                         placeholder="0"
                     />
 
-                    <div className="number-pad">
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
-                            <button key={number} onClick={() => addDigit(String(number))}>
-                                {number}
-                            </button>
-                        ))}
-
-                        <button onClick={clearInput}>C</button>
-                        <button onClick={() => addDigit("0")}>0</button>
-                        <button onClick={backspace}>⌫</button>
-                    </div>
+                    <NumberPad
+                        onDigit={addDigit}
+                        onClear={clearInput}
+                        onBackspace={backspace}
+                        backspaceContent={<span aria-hidden="true"><BackIcon/></span>}
+                    />
 
                     <button className="primary-button" onClick={submitGuess}>
                         Guess
-                    </button>
-
-                    <button
-                        className="secondary-button"
-                        onClick={() => setShowSettingsConfirm(true)}
-                    >
-                        Change Game Settings
                     </button>
 
                     <div className="result-area">{message}</div>
                 </section>
             )}
 
-            {roundResult && (
-                <Modal onClose={finishThenViewStats}>
-                    <ResultCard
-                        title={roundResult.won ? "You Won!" : "You Lost!"}
-                        subtitle={`Target: ${formatNumber(
-                            roundResult.target
-                        )}. Guesses used: ${formatNumber(roundResult.guessesUsed)}.`}
-                        onPlayAgain={finishThenPlayAgain}
-                        onViewStats={finishThenViewStats}
-                    />
-                </Modal>
-            )}
-
-            {showSettingsConfirm && (
-                <Modal onClose={() => setShowSettingsConfirm(false)} showDismissButton={false}>
-                    <section className="result-card">
-                        <h2>Change Settings?</h2>
-                        <p className="result-subtitle">
-                            Your current round will end and you will return to the game setup
-                            screen.
-                        </p>
-
-                        <div className="result-actions">
-                            <button
-                                className="secondary-button"
-                                onClick={() => setShowSettingsConfirm(false)}
-                            >
-                                Cancel
-                            </button>
-                            <button className="primary-button" onClick={goToSettings}>
-                                Game Settings
-                            </button>
-                        </div>
-                    </section>
-                </Modal>
-            )}
+            <GameModals
+                roundResult={roundResult}
+                onViewStats={finishThenViewStats}
+                onPlayAgain={finishThenPlayAgain}
+                onConfirmSettings={goToSettings}
+            />
         </main>
     );
 }
