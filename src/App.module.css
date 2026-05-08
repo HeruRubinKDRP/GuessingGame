@@ -1,0 +1,125 @@
+.app {
+    min-height: 100vh;
+    padding: 32px;
+    background: #101114;
+    color: #f4f4f5;
+    font-family: system-ui, sans-serif;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 40px;
+}
+
+.eyebrow {
+    margin: 0 0 6px;
+    color: #a1a1aa;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 12px;
+}
+
+.panel,
+.runner {
+    background: #181a20;
+    border: 1px solid #2a2d36;
+    border-radius: 20px;
+    padding: 24px;
+}
+
+.primaryButton,
+button {
+    border: 0;
+    border-radius: 999px;
+    padding: 10px 16px;
+    background: #f97316;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+.addButtons,
+.runnerActions,
+.cardActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.addButtons {
+    margin: 20px 0;
+}
+
+.chain {
+    display: grid;
+    gap: 16px;
+}
+
+.timerCard {
+    background: #22252d;
+    border: 1px solid #343844;
+    border-radius: 16px;
+    padding: 18px;
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.cardHeader strong {
+    text-transform: capitalize;
+    color: #fb923c;
+}
+
+.label {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 12px;
+    color: #d4d4d8;
+    font-size: 14px;
+}
+
+input {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #3f4452;
+    background: #111318;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.runner {
+    text-align: center;
+}
+
+.runner h2 {
+    font-size: 32px;
+}
+
+.timeDisplay {
+    font-size: clamp(64px, 16vw, 160px);
+    font-weight: 900;
+    line-height: 1;
+    margin: 32px 0;
+}
+
+.runnerMeta {
+    color: #a1a1aa;
+    margin: 16px 0;
+}

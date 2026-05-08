@@ -1,0 +1,140 @@
+.visualizer {
+    display: grid;
+    gap: 24px;
+}
+
+.numericalDisplay {
+    text-align: center;
+}
+
+.numericalDisplay p {
+    margin: 0 0 6px;
+    color: #a1a1aa;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 12px;
+}
+
+.numericalDisplay strong {
+    font-size: clamp(48px, 12vw, 120px);
+    line-height: 1;
+}
+
+.horizontalTrack {
+    height: 24px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #2a2d36;
+}
+
+.horizontalFill {
+    height: 100%;
+    background: #f97316;
+    transition: width 0.3s linear;
+}
+
+.ladderBars,
+.intervalBars {
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    gap: 12px;
+    min-height: 220px;
+}
+
+.ladderBar {
+    position: relative;
+    width: 48px;
+    height: 180px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #2a2d36;
+}
+
+.verticalFill,
+.segmentFill,
+.roundFill {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background: #f97316;
+    transition: height 0.3s linear;
+}
+
+.ladderBar span,
+.roundCube span,
+.intervalPair span {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    z-index: 1;
+    font-weight: 800;
+}
+
+.roundGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+.roundCube {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #2a2d36;
+}
+
+.intervalPair {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 56px;
+    height: 220px;
+    overflow: hidden;
+    border-radius: 14px;
+    background: #2a2d36;
+}
+
+.workSegment,
+.restSegment {
+    position: relative;
+    overflow: hidden;
+}
+
+.workSegment {
+    background: #343844;
+}
+
+.restSegment {
+    background: #20232b;
+}
+
+.overviewWrap {
+    margin-top: 8px;
+}
+
+.overviewTrack {
+    display: flex;
+    gap: 4px;
+    align-items: stretch;
+    height: 18px;
+}
+
+.overviewSegment {
+    position: relative;
+    min-width: 6px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #2a2d36;
+}
+
+.overviewFill {
+    height: 100%;
+    background: linear-gradient(90deg, #fb923c, #f97316);
+    transition: width 0.25s linear;
+}
