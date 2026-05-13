@@ -33,9 +33,7 @@ Use of one of the following:
 access an API
 
 ### access storage (database or local storage)
-
 uses localStorage to save the timers array, so that the user's timers maintain across new sessions.
 
 ## React Routes
-
 created explanatory home/start page and timers page, using React Router to navigate between them.
