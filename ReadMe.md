@@ -1,3 +1,8 @@
+view it working online:
+https://herurubinkdrp.github.io/GuessingGame/
+
+
+
 ## **An array**
 
 the app is built around using a series of timers, so these are kept in an array of objects
