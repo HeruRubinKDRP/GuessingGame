@@ -1,5 +1,5 @@
 import styles from "../App.module.css";
-/**
+/**------
  * “The Block Editor”
  *
  * This is the UI for editing ONE timer block in the workout chain. It should allow you to edit all the relevant parameters for

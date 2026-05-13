@@ -1,7 +1,7 @@
 import styles from "../App.module.css";
 import { TimerBlockForm } from "./TimerBlockForm";
 
-/**
+/**-----
  * “The Workout Builder”
  *
  * This is the main editor UI for the entire workout chain. It should allow you to:

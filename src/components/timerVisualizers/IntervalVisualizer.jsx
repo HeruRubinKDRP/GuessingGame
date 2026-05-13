@@ -1,7 +1,23 @@
 import styles from "./TimerVisualizers.module.css";
 import { NumericalDisplay } from "./NumericalDisplay";
 
+/**
+ * IntervalVisualizer
+ * Displays a work/rest interval block across multiple rounds.
+ *
+ * How the UI works:
+ * - top numerical readout shows current phase and round with remaining seconds
+ * - each round is rendered as a pair of stacked segments (work + rest)
+ * - completed rounds are fully filled; current round fills only the active phase
+ *
+ * Props:
+ * - block: interval block configuration
+ *   - workSeconds, restSeconds, rounds
+ * - runtime: live state from TimerRunner
+ *   - phase / phaseLabel, currentRound, currentStepRemaining, currentStepProgress
+ */
 export function IntervalVisualizer({ block, runtime }) {
+    // Keep work/rest segment heights proportional to their durations.
     const pairDuration = block.workSeconds + block.restSeconds;
     const workPercent = (block.workSeconds / pairDuration) * 100;
     const restPercent = (block.restSeconds / pairDuration) * 100;
@@ -15,6 +31,7 @@ export function IntervalVisualizer({ block, runtime }) {
 
             <div className={styles.intervalBars}>
                 {Array.from({ length: block.rounds }).map((_, index) => {
+                    // Round status controls whether segment fill is full, partial, or empty.
                     const isPast = index < runtime.currentRound - 1;
                     const isCurrent = index === runtime.currentRound - 1;
 

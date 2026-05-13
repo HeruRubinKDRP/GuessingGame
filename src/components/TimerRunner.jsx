@@ -3,6 +3,10 @@ import styles from "../App.module.css";
 import { TimerVisualizer } from "./timerVisualizers/TimerVisualizer";
 import { WorkoutOverviewBar } from "./timerVisualizers/WorkoutOverviewBar.jsx";
 
+/**----
+ * Expands user-created workout blocks into a linear step-by-step timeline the runner can execute.
+ * Each step stores visualizers use (phase, round, local step index, labels).
+ */
 function expandWorkout(blocks) {
     return blocks.flatMap((block) => {
         if (block.type === "countdown") {
@@ -90,10 +94,15 @@ function expandWorkout(blocks) {
     });
 }
 
+/** Returns all expanded steps that belong to a specific block id. */
 function getBlockSteps(timeline, blockId) {
     return timeline.filter((step) => step.blockId === blockId);
 }
 
+/**
+ * Computes elapsed seconds inside the active block by summing prior steps
+ * and the partial progress of the current step.
+ */
 function getBlockElapsed(blockSteps, currentStep, secondsLeft) {
     let elapsed = 0;
 
@@ -109,6 +118,7 @@ function getBlockElapsed(blockSteps, currentStep, secondsLeft) {
     return elapsed;
 }
 
+/** Formats seconds as m:ss for runner-level metadata text. */
 function formatTime(seconds) {
     const safeSeconds = Math.max(0, Math.floor(seconds));
     const mins = Math.floor(safeSeconds / 60);
@@ -117,6 +127,18 @@ function formatTime(seconds) {
     return `${mins}:${String(secs).padStart(2, "0")}`;
 }
 
+/**
+ * TimerRunner
+ * Plays a workout chain step-by-step and provides normalized runtime data to visualizers.
+ *
+ * Props:
+ * - workout: workout definition with `blocks` (the chain authored in TimerChainEditor)
+ *
+ * Responsibilities:
+ * - derive an executable timeline from block definitions
+ * - run/pause/reset/skip playback state
+ * - expose runtime metrics for block visualizers and workout overview UI
+ */
 export function TimerRunner({ workout }) {
     const timeline = useMemo(() => expandWorkout(workout.blocks), [workout.blocks]);
 
@@ -139,6 +161,7 @@ export function TimerRunner({ workout }) {
     const currentStepElapsed = currentStep ? currentStep.seconds - secondsLeft : 0;
     const currentStepDuration = currentStep?.seconds ?? 0;
 
+    // Shared runtime contract consumed by all timer visualizer components.
     const runtime = {
         globalStepIndex: stepIndex,
         totalGlobalSteps: timeline.length,
@@ -172,6 +195,7 @@ export function TimerRunner({ workout }) {
     useEffect(() => {
         if (!isRunning || !currentStep) return;
 
+        // Tick once per second; when a step ends, advance to the next step automatically.
         const intervalId = setInterval(() => {
             setSecondsLeft((previousSeconds) => {
                 if (previousSeconds > 1) {

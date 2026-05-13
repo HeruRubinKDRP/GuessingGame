@@ -14,6 +14,12 @@
     margin-bottom: 24px;
 }
 
+.headerActions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
 .header h1 {
     margin: 0;
     font-size: 40px;
@@ -35,6 +41,29 @@
     padding: 24px;
 }
 
+.homePanel {
+    max-width: 760px;
+    margin: 0 auto;
+    background: #181a20;
+    border: 1px solid #2a2d36;
+    border-radius: 20px;
+    padding: 28px;
+    display: grid;
+    gap: 14px;
+}
+
+.homePanel h1 {
+    margin: 0;
+    font-size: clamp(28px, 5vw, 44px);
+}
+
+.homeCopy {
+    margin: 0;
+    line-height: 1.5;
+    color: #d4d4d8;
+    max-width: 62ch;
+}
+
 .primaryButton,
 button {
     border: 0;
@@ -44,6 +73,25 @@ button {
     color: #fff;
     cursor: pointer;
     font-weight: 700;
+}
+
+.primaryLink,
+.secondaryLink {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 10px 16px;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.primaryLink {
+    background: #f97316;
+    color: #fff;
+}
+
+.secondaryLink {
+    background: #2a2d36;
+    color: #f4f4f5;
 }
 
 button:hover {
