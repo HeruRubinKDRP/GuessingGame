@@ -1,7 +1,8 @@
 view it working online:
 https://herurubinkdrp.github.io/GuessingGame/
 
-
+video demo:
+https://youtu.be/rmBP0wldV-0
 
 ## **An array**
 
